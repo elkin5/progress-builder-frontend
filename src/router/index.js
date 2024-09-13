@@ -1,29 +1,56 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+// import Vue from 'vue';
+// import Router from 'vue-router';
+import Users from '../views/Users.vue';//test
+// // import Clients from './views/Clients.vue';
+// // import Projects from './views/Projects.vue';
+// // import Reports from './views/Reports.vue';
 
-Vue.use(VueRouter)
+// Vue.use(Router);
+
+// export default new Router({
+//   mode: 'history', // Habilita el modo history
+//   routes: [
+//     { path: '/users', component: Users },
+//     // { path: '/clients', component: Clients },
+//     // { path: '/projects', component: Projects },
+//     // { path: '/reports', component: Reports },
+//   ],
+// });
+
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import UsersView from '@/views/UsersView.vue';
+import CreateUser from '@/components/users/CreateUser.vue';
+import UpdateUser from '@/components/users/UpdateUser.vue';
+import UserList from '@/components/users/UserList.vue';
+
+Vue.use(VueRouter);
 
 const routes = [
+  { path: '/usuarios', component: Users },//test
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    path: '/users',
+    component: UsersView,
+    children: [
+      {
+        path: '',
+        component: UserList,
+      },
+      {
+        path: 'create',
+        component: CreateUser,
+      },
+      {
+        path: 'edit/:id',
+        component: UpdateUser,
+      },
+    ],
   },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
-]
+];
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
