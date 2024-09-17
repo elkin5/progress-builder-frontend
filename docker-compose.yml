@@ -1,3 +1,41 @@
 version: '3'
+
 services:
-  front-end:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: your_postgres_user
+      POSTGRES_PASSWORD: your_postgres_password
+      POSTGRES_DB: your_database_name
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ../back-end/  # Ajusta esta ruta a la ubicación de tu Dockerfile de API
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: your_postgres_user
+      DB_PASSWORD: your_postgres_password
+      DB_NAME: your_database_name
+      DB_DIALECT: postgres
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./  # Ajusta esta ruta a la ubicación de tu Dockerfile de frontend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/app  # Monta tu código fuente en el contenedor
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:

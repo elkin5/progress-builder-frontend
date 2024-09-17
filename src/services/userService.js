@@ -1,21 +1,50 @@
 import axios from 'axios';
 
-const API_URL = 'https://example.com/api/users'; // URL de tu API
+const API_URL = process.env.VUE_APP_API_URL;
 
 export default {
-  getAllUsers() {
-    return axios.get(API_URL);
+  async getAllUsers() {
+    try {
+      const response = await axios.get(`${API_URL}/users`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
   },
-  getUserById(id) {
-    return axios.get(`${API_URL}/${id}`);
+  
+  async getUserById(id) {
+    try {
+      const response = await axios.get(`${API_URL}/users/${id}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
   },
-  createUser(user) {
-    return axios.post(API_URL, user);
+
+  async createUser(user) {
+    try {
+      const response = await axios.post(`${API_URL}/users/register`, user);
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
   },
-  updateUser(id, user) {
-    return axios.put(`${API_URL}/${id}`, user);
+
+  async updateUser(id, user) {
+    try {
+      const response = await axios.put(`${API_URL}/users/${id}`, user);
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
   },
-  deleteUser(id) {
-    return axios.delete(`${API_URL}/${id}`);
+
+  async deleteUser(id) {
+    try {
+      const response = await axios.delete(`${API_URL}/users/${id}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 };

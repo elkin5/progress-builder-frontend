@@ -28,6 +28,7 @@ Vue.use(VueRouter);
 
 const routes = [
   { path: '/usuarios', component: Users },//test
+  
   {
     path: '/users',
     component: UsersView,

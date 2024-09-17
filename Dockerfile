@@ -1,25 +1,20 @@
-# Etapa 1: Construcción de la aplicación
-FROM node:22.8.0 AS build
+# Usa una imagen de node para construir la aplicación
+FROM node:22.8.0
 
-# Configura el directorio de trabajo
+# Establece el directorio de trabajo
 WORKDIR /app
 
-# Copia los archivos de tu proyecto al contenedor
+# Copia los archivos package.json y package-lock.json
 COPY package*.json ./
+
+# Instala las dependencias
 RUN npm install
+
+# Copia el resto de los archivos
 COPY . .
 
-# Construye la aplicación
-RUN npm run build
+# Expon el puerto en el que el servidor de desarrollo escuchará
+EXPOSE 8080
 
-# Etapa 2: Servir la aplicación
-FROM nginx:alpine
-
-# Copia los archivos de la construcción al contenedor Nginx
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Exponer el puerto en el que Nginx está escuchando
-EXPOSE 80
-
-# Comando por defecto para iniciar Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Comando para iniciar el servidor de desarrollo de Vue
+CMD ["npm", "run", "serve"]
