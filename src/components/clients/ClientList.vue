@@ -1,38 +1,37 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="12" md="12"> <!-- Se usa toda la columna en versiones desktop -->
+      <v-col cols="12" md="12">
         <v-card class="pa-4">
           <!-- Título de la pantalla -->
           <v-card-title>
-            <h2>Listado de Usuarios</h2>
+            <h2>Listado de Clientes</h2>
           </v-card-title>
 
-          <!-- Botón Crear Usuario alineado a la derecha -->
+          <!-- Botón Crear Cliente alineado a la derecha -->
           <v-row justify="end">
             <v-col cols="auto">
-
-              <v-btn @click="$router.push('/users/create')" color="primary">
-                Crear Usuario
+              <v-btn @click="$router.push('/clients/create')" color="primary">
+                Crear Cliente
               </v-btn>
             </v-col>
           </v-row>
 
           <!-- Campo de búsqueda -->
-          <v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" single-line
-            hide-details></v-text-field>
+          <v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" single-line hide-details></v-text-field>
 
-          <!-- Tabla de usuarios -->
-          <v-data-table :items="users" :headers="headers" :search="search" class="elevation-1">
+          <!-- Tabla de clientes -->
+          <v-data-table :items="clients" :headers="headers" :search="search" class="elevation-1">
             <template v-slot:body="{ items }">
               <tbody>
                 <tr v-for="item in items" :key="item.id">
                   <td>{{ item.name }}</td>
                   <td>{{ item.email }}</td>
-                  <td>{{ item.identification }}</td> <!-- Identificación -->
-                  <td>{{ item.position }}</td> <!-- Posición -->
+                  <td>{{ item.phone }}</td>
+                  <td>{{ item.identification }}</td>
+                  <td>{{ item.type.text }}</td> <!-- Tipo -->
                   <td>
-                    <v-btn color="yellow darken-2" icon elevation="10" @click="editUser(item)">
+                    <v-btn color="yellow darken-2" icon elevation="10" @click="editClient(item)">
                       <v-icon>mdi-pencil</v-icon> <!-- Ícono de edición -->
                     </v-btn>
 
@@ -48,10 +47,10 @@
       </v-col>
     </v-row>
 
-    <!-- Diálogo de confirmación para eliminar usuario -->
+    <!-- Diálogo de confirmación para eliminar cliente -->
     <confirm-dialog v-if="showDeleteDialog"
-      :message="'¿Estás seguro de que deseas eliminar al usuario ' + selectedUser.name + '?'"
-      @confirm="confirmDeleteUser" @cancel="closeDeleteDialog" />
+      :message="'¿Estás seguro de que deseas eliminar al cliente ' + selectedClient.name + '?'"
+      @confirm="confirmDeleteClient" @cancel="closeDeleteDialog" />
 
     <!-- Mensajes de éxito y error -->
     <success-message v-if="showSuccessMessage" :message="successMessage" />
@@ -60,7 +59,7 @@
 </template>
 
 <script>
-import userService from "@/services/userService"; // Importa el servicio
+import clientService from "@/services/clientService"; // Importa el servicio
 import ConfirmDialog from "@/components/shared/ConfirmDialog.vue"; // Importa el componente de confirmación
 
 export default {
@@ -69,12 +68,13 @@ export default {
   },
   data() {
     return {
-      users: [], // Lista vacía, se llenará con los datos reales
+      clients: [], // Lista vacía, se llenará con los datos reales
       headers: [
         { text: "Nombre", value: "name" },
         { text: "Email", value: "email" },
+        { text: "Teléfono", value: "phone" },
         { text: "Identificación", value: "identification" },
-        { text: "Posición", value: "position" },
+        { text: "Tipo", value: "type", sortable: false },
         { text: "Acciones", value: "actions", sortable: false }
       ],
       search: '', // Para realizar la búsqueda
@@ -83,47 +83,47 @@ export default {
       successMessage: '',
       errorMessage: '',
       showDeleteDialog: false, // Estado para mostrar el diálogo de confirmación
-      selectedUser: null // Usuario seleccionado para eliminar
+      selectedClient: null // Cliente seleccionado para eliminar
     };
   },
   created() {
-    this.loadUsers(); // Cargar la lista de usuarios cuando el componente se monte
+    this.loadClients(); // Cargar la lista de clientes cuando el componente se monte
   },
   methods: {
-    // Método para cargar la lista de usuarios desde la API
-    async loadUsers() {
+    // Método para cargar la lista de clientes desde la API
+    async loadClients() {
       try {
-        this.users = await userService.getAllUsers(); // Llamada al servicio para obtener usuarios
+        this.clients = await clientService.getAllClients(); // Llamada al servicio para obtener clientes
       } catch (error) {
-        this.showError('Error al cargar la lista de usuarios');
+        this.showError('Error al cargar la lista de clientes');
       }
     },
 
-    // Método para redirigir a la edición de usuario
-    editUser(user) {
-      this.$router.push(`/users/edit/${user.id}`);
+    // Método para redirigir a la edición de cliente
+    editClient(client) {
+      this.$router.push(`/clients/edit/${client.id}`);
     },
 
     // Abrir diálogo de confirmación antes de eliminar
-    openDeleteDialog(user) {
-      this.selectedUser = user; // Guardar el usuario seleccionado
+    openDeleteDialog(client) {
+      this.selectedClient = client; // Guardar el cliente seleccionado
       this.showDeleteDialog = true; // Mostrar el diálogo
     },
 
     // Método para cerrar el diálogo de confirmación
     closeDeleteDialog() {
-      this.selectedUser = null;
+      this.selectedClient = null;
       this.showDeleteDialog = false; // Cerrar el diálogo
     },
 
-    // Método para confirmar la eliminación de un usuario
-    async confirmDeleteUser() {
+    // Método para confirmar la eliminación de un cliente
+    async confirmDeleteClient() {
       try {
-        await userService.deleteUser(this.selectedUser.id); // Llamada al servicio para eliminar usuario
-        this.users = this.users.filter(user => user.id !== this.selectedUser.id); // Filtrar la lista local
-        this.showSuccess('Usuario eliminado con éxito');
+        await clientService.deleteClient(this.selectedClient.id); // Llamada al servicio para eliminar cliente
+        this.clients = this.clients.filter(client => client.id !== this.selectedClient.id); // Filtrar la lista local
+        this.showSuccess('Cliente eliminado con éxito');
       } catch (error) {
-        this.showError('Error al eliminar el usuario');
+        this.showError('Error al eliminar el cliente');
       } finally {
         this.closeDeleteDialog(); // Cerrar el diálogo después de la operación
       }
@@ -145,3 +145,7 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+/* Estilos personalizados si es necesario */
+</style>

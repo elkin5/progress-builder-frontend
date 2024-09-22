@@ -8,9 +8,9 @@ function getAuthHeader() {
 }
 
 export default {
-  async getAllUsers() {
+  async getAllClients() {
     try {
-      const response = await axios.get(`${API_URL}/users`, {
+      const response = await axios.get(`${API_URL}/clients`, {
         headers: getAuthHeader(),
       });
       return response.data;
@@ -19,9 +19,9 @@ export default {
     }
   },
   
-  async getUserById(id) {
+  async getClientById(id) {
     try {
-      const response = await axios.get(`${API_URL}/users/${id}`, {
+      const response = await axios.get(`${API_URL}/clients/${id}`, {
         headers: getAuthHeader(),
       });
       return response.data;
@@ -30,9 +30,9 @@ export default {
     }
   },
 
-  async createUser(user) {
+  async createClient(client) {
     try {
-      const response = await axios.post(`${API_URL}/users/register`, user, {
+      const response = await axios.post(`${API_URL}/clients/register`, client, {
         headers: getAuthHeader(),
       });
       return response.data;
@@ -41,9 +41,9 @@ export default {
     }
   },
 
-  async updateUser(id, user) {
+  async updateClient(id, client) {
     try {
-      const response = await axios.put(`${API_URL}/users/${id}`, user, {
+      const response = await axios.put(`${API_URL}/clients/${id}`, client, {
         headers: getAuthHeader(),
       });
       return response.data;
@@ -52,9 +52,9 @@ export default {
     }
   },
 
-  async deleteUser(id) {
+  async deleteClient(id) {
     try {
-      const response = await axios.delete(`${API_URL}/users/${id}`, {
+      const response = await axios.delete(`${API_URL}/clients/${id}`, {
         headers: getAuthHeader(),
       });
       return response.data;

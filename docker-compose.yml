@@ -12,20 +12,23 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  api:
-    build:
-      context: ../back-end/  # Ajusta esta ruta a la ubicación de tu Dockerfile de API
-    ports:
-      - "3000:3000"
-    environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: your_postgres_user
-      DB_PASSWORD: your_postgres_password
-      DB_NAME: your_database_name
-      DB_DIALECT: postgres
-    depends_on:
-      - db
+  #api:
+  #  build:
+  #    context: ../back-end/  # Ajusta esta ruta a la ubicación de tu Dockerfile de API
+  #  volumes:
+  #    - ../back-end:/app                # Monta el directorio de la API
+  #  ports:
+  #   - "3000:3000"
+  #  environment:
+  #    DB_HOST: db
+  #    DB_PORT: 5432
+  #   DB_USER: your_postgres_user
+  #    DB_PASSWORD: your_postgres_password
+  #    DB_NAME: your_database_name
+  #    DB_DIALECT: postgres
+  #    ALLOWED_ORIGINS: http://localhost:8080
+  #  depends_on:
+  #    - db
 
   frontend:
     build:
@@ -34,8 +37,8 @@ services:
       - "8080:8080"
     volumes:
       - ./:/app  # Monta tu código fuente en el contenedor
-    depends_on:
-      - api
+    #depends_on:
+    #  - api
 
 volumes:
   postgres_data:

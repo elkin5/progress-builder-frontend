@@ -3,10 +3,9 @@
     <v-row justify="center">
       <v-col cols="12" md="6">
         <v-card class="pa-4">
-
           <!-- Título de la pantalla -->
           <v-card-title>
-            <h2>Actualizar Usuario</h2>
+            <h2>Actualizar Cliente</h2>
           </v-card-title>
 
           <v-form ref="form" v-model="valid" lazy-validation>
@@ -18,44 +17,29 @@
 
               <!-- Email Field -->
               <v-col cols="12">
-                <v-text-field v-model="email" :rules="[rules.required, rules.email]" label="Email"
-                  required></v-text-field>
+                <v-text-field v-model="email" :rules="[rules.required, rules.email]" label="Email" required></v-text-field>
               </v-col>
-
-              <!-- Password Field -->
-              <!-- <v-col cols="12">
-                <v-text-field v-model="password" :rules="[rules.required]" label="Contraseña" type="password" required>
-                  <template #append>
-                    <v-btn @click="showPassword = !showPassword" icon>
-                      <v-icon>{{ showPassword ? 'mdi-eye' : 'mdi-eye-off' }}</v-icon>
-                    </v-btn>
-                  </template>
-</v-text-field>
-</v-col> -->
 
               <!-- Phone Field -->
               <v-col cols="12">
-                <v-text-field v-model="phone" :rules="[rules.required, rules.numeric, rules.phone]" label="Teléfono"
-                  required></v-text-field>
+                <v-text-field v-model="phone" :rules="[rules.required, rules.numeric, rules.phone]" label="Teléfono" required></v-text-field>
               </v-col>
 
               <!-- Identification Field -->
               <v-col cols="12">
-                <v-text-field v-model="identification" :rules="[rules.required, rules.numeric]" label="Identificación"
-                  required></v-text-field>
+                <v-text-field v-model="identification" :rules="[rules.required, rules.numeric]" label="Identificación" required></v-text-field>
               </v-col>
 
-              <!-- Position Field -->
+              <!-- Type Field -->
               <v-col cols="12">
-                <v-select v-model="position" :items="positions" :rules="[rules.required]" label="Posición"
-                  required></v-select>
+                <v-select v-model="type" :items="types" :rules="[rules.required]" label="Tipo" required></v-select>
               </v-col>
             </v-row>
 
             <!-- Submit Button -->
             <v-col cols="12">
               <v-btn :disabled="!valid" color="success" @click="submit" block>
-                Actualizar Usuario
+                Actualizar Cliente
               </v-btn>
             </v-col>
 
@@ -69,13 +53,11 @@
         </v-card>
       </v-col>
     </v-row>
-
-
   </v-container>
 </template>
 
 <script>
-import userService from '@/services/userService';
+import clientService from '@/services/clientService';
 
 export default {
   data() {
@@ -83,17 +65,12 @@ export default {
       valid: false,
       name: '',
       email: '',
-      // password: '',
       phone: '',
       identification: '',
-      position: '',
-      showPassword: false,
-      positions: [
-        { text: 'Admin' },
-        { text: 'Jefe de Obra' },
-        { text: 'Arquitecto' },
-        { text: 'Albañil' },
-        { text: 'Ayudante' }
+      type: '',
+      types: [
+        { text: 'Natural' },
+        { text: 'Legal' }
       ],
       rules: {
         required: value => !!value || 'Este campo es obligatorio.',
@@ -101,9 +78,7 @@ export default {
           const pattern = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
           return pattern.test(value) || 'Correo electrónico no válido.';
         },
-        name: value => /^[a-zA-Z\s]+$/.test(value) || 'El nombre debe contener solo letras.',
         phone: value => /^[0-9]{10}$/.test(value) || 'El teléfono debe tener 10 dígitos numéricos.',
-        // password: value => /^[a-zA-Z0-9]{8,16}$/.test(value) || 'La contraseña debe ser alfanumérica de 8 a 16 caracteres.',
         identification: value => /^[0-9]+$/.test(value) || 'La identificación debe ser numérica.'
       },
       showSuccessMessage: false,
@@ -113,42 +88,41 @@ export default {
     };
   },
   created() {
-    const userId = this.$route.params.id; // Obtener el ID del usuario desde la ruta
-    this.loadUserData(userId); // Cargar los datos del usuario
+    const clientId = this.$route.params.id; // Obtener el ID del cliente desde la ruta
+    this.loadClientData(clientId); // Cargar los datos del cliente
   },
   methods: {
-    // Método para cargar los datos del usuario desde la API
-    async loadUserData(id) {
+    // Método para cargar los datos del cliente desde la API
+    async loadClientData(id) {
       try {
-        const user = await userService.getUserById(id); // Llamada a UserService para obtener los datos del usuario
-        this.name = user.name;
-        this.email = user.email;
-        this.identification = user.identification;
-        this.position = user.position;
-        this.phone = user.phone;
+        const client = await clientService.getClientById(id); // Llamada a ClientService para obtener los datos del cliente
+        this.name = client.name;
+        this.email = client.email;
+        this.identification = client.identification;
+        this.type = client.type;
+        this.phone = client.phone;
       } catch (error) {
-        this.showError('Error al cargar los datos del usuario');
+        this.showError('Error al cargar los datos del cliente');
       }
     },
 
-    // Método para enviar la actualización del usuario
+    // Método para enviar la actualización del cliente
     async submit() {
       this.resetMessages();
       if (this.$refs.form.validate()) {
         try {
-          const updatedUser = {
+          const updatedClient = {
             name: this.name,
             email: this.email,
-            // password: this.password,
             phone: this.phone,
             identification: this.identification,
-            position: this.position
+            type: this.type
           };
-          // Llamada a UserService para actualizar los datos del usuario
-          await userService.updateUser(this.$route.params.id, updatedUser);
-          this.showSuccess('¡Usuario actualizado con éxito!');
+          // Llamada a ClientService para actualizar los datos del cliente
+          await clientService.updateClient(this.$route.params.id, updatedClient);
+          this.showSuccess('¡Cliente actualizado con éxito!');
         } catch (error) {
-          this.showError('Error al actualizar el usuario');
+          this.showError('Error al actualizar el cliente');
         }
       }
     },
