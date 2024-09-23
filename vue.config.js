@@ -7,7 +7,7 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       '/api': {
-        target: process.env.VUE_APP_API_URL || 'http://localhost:3000', // Usa la variable de entorno o un valor predeterminado
+        target: process.env.VUE_APP_API_URL, // Usa la variable de entorno o un valor predeterminado
         changeOrigin: true,
         pathRewrite: { '^/api': '' },
         onProxyRes: (proxyRes) => {
