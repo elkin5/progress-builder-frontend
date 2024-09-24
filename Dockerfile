@@ -10,6 +10,9 @@ COPY package*.json ./
 # Instala las dependencias
 RUN npm install
 
+ENV NODE_ENV=production \
+    VUE_APP_API_URL=https://progress-builder-backend-production.up.railway.app/api
+
 # Copia el código fuente de la aplicación
 COPY . .
 
