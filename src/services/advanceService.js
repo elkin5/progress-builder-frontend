@@ -1,65 +1,48 @@
-import axios from 'axios';
-
-const API_URL = process.env.VUE_APP_API_URL;
-
-function getAuthHeader() {
-    const token = localStorage.getItem('token');
-    return token ? { Authorization: `Bearer ${token}` } : {};
-}
+import axiosInstance from '@/services/axiosInstance';
 
 export default {
-    async getAllAdvances() {
+    async getAllAdvances(page = 1, pageSize = 10) {
         try {
-            const response = await axios.get(`${API_URL}/advances`, {
-                headers: getAuthHeader(),
-            });
+            const response = await axiosInstance().get(`/advances?page=${page}&pageSize=${pageSize}`);
             return response.data;
         } catch (error) {
-            throw new Error(error);
+            throw new Error('Error al obtener los avances.');
         }
     },
 
     async getAdvanceById(id) {
         try {
-            const response = await axios.get(`${API_URL}/advances/${id}`, {
-                headers: getAuthHeader(),
-            });
+            const response = await axiosInstance().get(`/advances/${id}`);
             return response.data;
         } catch (error) {
-            throw new Error(error);
+            throw new Error('Error al obtener el avance.');
         }
     },
 
     async createAdvance(advance) {
         try {
-            const response = await axios.post(`${API_URL}/advances`, advance, {
-                headers: getAuthHeader(),
-            });
+            const response = await axiosInstance().post('/advances', advance);
             return response.data;
         } catch (error) {
-            throw new Error(error);
+            throw new Error('Error al crear el avance.');
         }
     },
 
     async updateAdvance(id, advance) {
         try {
-            const response = await axios.put(`${API_URL}/advances/${id}`, advance, {
-                headers: getAuthHeader(),
-            });
+            const response = await axiosInstance().put(`/advances/${id}`, advance);
             return response.data;
         } catch (error) {
-            throw new Error(error);
+            throw new Error('Error al actualizar el avance.');
         }
     },
 
     async deleteAdvance(id) {
         try {
-            const response = await axios.delete(`${API_URL}/advances/${id}`, {
-                headers: getAuthHeader(),
-            });
+            const response = await axiosInstance().delete(`/advances/${id}`);
             return response.data;
         } catch (error) {
-            throw new Error(error);
+            throw new Error('Error al eliminar el avance.');
         }
     }
 };
