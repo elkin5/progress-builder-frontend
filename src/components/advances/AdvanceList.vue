@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="12" md="8">
+      <v-col cols="12" md="12">
         <v-card>
           <v-card-title>
             <h2>Avances</h2>

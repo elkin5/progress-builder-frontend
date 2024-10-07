@@ -24,22 +24,29 @@
           <v-data-table :items="clients" :headers="headers" :search="search" class="elevation-1">
             <template v-slot:body="{ items }">
               <tbody>
-                <tr v-for="item in items" :key="item.id">
-                  <td>{{ item.name }}</td>
-                  <td>{{ item.email }}</td>
-                  <td>{{ item.phone }}</td>
-                  <td>{{ item.identification }}</td>
-                  <td>{{ item.type.text }}</td> <!-- Tipo -->
-                  <td>
-                    <v-btn color="yellow darken-2" icon elevation="10" @click="editClient(item)">
-                      <v-icon>mdi-pencil</v-icon> <!-- Ícono de edición -->
-                    </v-btn>
+              <tr v-for="item in items" :key="item.id">
+                <td>{{ item.name }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.phone }}</td>
+                <td>{{ item.identification }}</td>
+                <td>{{ item.type.text }}</td> <!-- Tipo -->
+                <td>
+                  <!-- Botón para editar cliente -->
+                  <v-btn color="yellow darken-2" icon elevation="10" @click="editClient(item)">
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
 
-                    <v-btn color="red darken-2" icon elevation="10" @click="openDeleteDialog(item)">
-                      <v-icon>mdi-delete</v-icon> <!-- Ícono de eliminar -->
-                    </v-btn>
-                  </td>
-                </tr>
+                  <!-- Botón para eliminar cliente -->
+                  <v-btn color="red darken-2" icon elevation="10" @click="openDeleteDialog(item)">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+
+                  <!-- Botón para crear un proyecto asociado a este cliente -->
+                  <v-btn color="blue darken-2" icon elevation="10" @click="createProjectForClient(item)">
+                    <v-icon>mdi-briefcase-plus</v-icon> <!-- Ícono de crear proyecto -->
+                  </v-btn>
+                </td>
+              </tr>
               </tbody>
             </template>
           </v-data-table>
@@ -49,8 +56,8 @@
 
     <!-- Diálogo de confirmación para eliminar cliente -->
     <confirm-dialog v-if="showDeleteDialog"
-      :message="'¿Estás seguro de que deseas eliminar al cliente ' + selectedClient.name + '?'"
-      @confirm="confirmDeleteClient" @cancel="closeDeleteDialog" />
+                    :message="'¿Estás seguro de que deseas eliminar al cliente ' + selectedClient.name + '?'"
+                    @confirm="confirmDeleteClient" @cancel="closeDeleteDialog" />
 
     <!-- Mensajes de éxito y error -->
     <success-message v-if="showSuccessMessage" :message="successMessage" />
@@ -102,6 +109,11 @@ export default {
     // Método para redirigir a la edición de cliente
     editClient(client) {
       this.$router.push(`/clients/edit/${client.id}`);
+    },
+
+    // Método para redirigir a la creación de un proyecto para un cliente específico
+    createProjectForClient(client) {
+      this.$router.push({ path: '/projects/create', query: { clientId: client.id } });
     },
 
     // Abrir diálogo de confirmación antes de eliminar

@@ -21,7 +21,7 @@ export default {
 
     async createTask(task) {
         try {
-            const response = await axiosInstance().post('/tasks', task);
+            const response = await axiosInstance().post('/tasks/register', task);
             return response.data;
         } catch (error) {
             throw new Error('Error al crear la tarea. Verifique los datos.');

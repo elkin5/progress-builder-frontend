@@ -21,7 +21,7 @@ export default {
 
     async createProject(project) {
         try {
-            const response = await axiosInstance().post('/projects', project);
+            const response = await axiosInstance().post('/projects/register', project);
             return response.data;
         } catch (error) {
             throw new Error('Error al crear el proyecto.');

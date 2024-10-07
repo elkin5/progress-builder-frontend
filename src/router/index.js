@@ -16,7 +16,7 @@ import ClientList from '@/components/clients/ClientList.vue';
 // Importaciones para Proyectos
 import ProjectsView from '@/views/ProjectsView.vue';
 import CreateProject from '@/components/projects/CreateProject.vue';
-// import UpdateProject from '@/components/projects/UpdateProject.vue';
+import UpdateProject from '@/components/projects/UpdateProject.vue';
 import ProjectList from '@/components/projects/ProjectList.vue';
 
 // Importaciones para Tareas
@@ -98,7 +98,7 @@ const routes = [
       },
       {
         path: 'edit/:id',
-        // component: UpdateProject,
+        component: UpdateProject,
       },
     ],
   },

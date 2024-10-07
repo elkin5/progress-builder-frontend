@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="12" md="8">
+      <v-col cols="12" md="12">
         <v-card>
           <v-card-title>
             <h2>Tareas</h2>
@@ -129,6 +129,11 @@ export default {
       this.errorMessage = message;
       this.showErrorMessage = true;
       this.showSuccessMessage = false;
+    },
+
+    // Método para redirigir a la creación de proyecto
+    goToCreateTask() {
+      this.$router.push('/tasks/create');
     }
   }
 };

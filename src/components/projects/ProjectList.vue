@@ -1,33 +1,46 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="12" md="8">
-        <v-card>
+      <v-col cols="12" md="12">
+        <v-card class="pa-4">
           <v-card-title>
             <h2>Proyectos</h2>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" @click="goToCreateProject">Crear Proyecto</v-btn>
           </v-card-title>
 
-          <v-data-table :headers="headers" :items="projects" class="elevation-1">
-            <template v-slot:item.actions="{ item }">
-              <v-icon small @click="editProject(item)">mdi-pencil</v-icon>
-              <v-icon small @click="deleteProject(item)">mdi-delete</v-icon>
-            </template>
+          <!-- Botón Crear Cliente alineado a la derecha -->
+          <v-row justify="end">
+            <v-col cols="auto">
+              <v-btn color="primary" @click="goToCreateProject">Crear Proyecto</v-btn>
+            </v-col>
+          </v-row>
+
+          <!-- Campo de búsqueda -->
+          <v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" single-line hide-details></v-text-field>
+
+          <!-- Tabla de proyectos -->
+          <v-data-table :items="projects" :headers="headers" :search="search" class="elevation-1">
             <template v-slot:body="{ items }">
               <tbody>
               <tr v-for="item in items" :key="item.id">
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
-                <td>{{ item.client ? item.client.name : 'Sin cliente' }}</td> <!-- Comprobación de client -->
+                <td>{{ item.client ? item.client.name : 'Sin cliente' }}</td>
                 <td>
+                  <!-- Botón para editar el proyecto -->
                   <v-btn color="yellow darken-2" icon elevation="10" @click="editProject(item)">
                     <v-icon>mdi-pencil</v-icon>
                   </v-btn>
 
+                  <!-- Botón para eliminar el proyecto -->
                   <v-btn color="red darken-2" icon elevation="10" @click="openDeleteDialog(item)">
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
+
+                  <!-- Botón para agregar tarea -->
+                  <v-btn color="green darken-2" icon elevation="10" @click="addTask(item)">
+                    <v-icon>mdi-plus-box</v-icon> <!-- Ícono de agregar tarea -->
+                  </v-btn>
+
                 </td>
               </tr>
               </tbody>
@@ -59,13 +72,13 @@ export default {
   data() {
     return {
       projects: [], // Lista vacía, se llenará con los datos reales
+      search: '', // Campo de búsqueda
       headers: [
         {text: "Nombre", value: "name"},
         {text: "Descripción", value: "description"},
         {text: "Cliente", value: "client.name"}, // Se muestra el nombre del cliente si existe
         {text: "Acciones", value: "actions", sortable: false}
       ],
-      search: '', // Para realizar la búsqueda
       showSuccessMessage: false,
       showErrorMessage: false,
       successMessage: '',
@@ -90,6 +103,13 @@ export default {
     // Método para redirigir a la edición de proyecto
     editProject(project) {
       this.$router.push(`/projects/edit/${project.id}`);
+    },
+
+    // Método para redirigir a la creación de tarea asociada a un proyecto
+    addTask(project) {
+      this.$router.push({
+        path: '/tasks/create', query: { projectId: project.id } // Asegúrate de enviar el projectId en la query
+      });
     },
 
     // Abrir diálogo de confirmación antes de eliminar
