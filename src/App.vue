@@ -85,6 +85,8 @@ export default {
         { title: 'Users', icon: 'mdi-account', route: '/users' },
         { title: 'Clients', icon: 'mdi-account-group', route: '/clients' },
         { title: 'Projects', icon: 'mdi-briefcase', route: '/projects' },
+        { title: 'Tasks', icon: 'mdi-file-document', route: '/tasks' },
+        { title: 'Advances', icon: 'mdi-progress-clock', route: '/advances' },
         { title: 'Reports', icon: 'mdi-file-chart', route: '/reports' },
       ],
     };

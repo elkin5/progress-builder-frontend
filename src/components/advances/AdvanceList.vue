@@ -14,53 +14,133 @@
               <v-icon small @click="editAdvance(item)">mdi-pencil</v-icon>
               <v-icon small @click="deleteAdvance(item)">mdi-delete</v-icon>
             </template>
+            <template v-slot:body="{ items }">
+              <tbody>
+              <tr v-for="item in items" :key="item.id">
+                <td>{{ item.name }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.task ? item.task.name : 'Sin tarea asignada' }}</td> <!-- Validar tarea -->
+                <td>{{ item.creationDate }}</td>
+                <td>
+                  <v-btn color="yellow darken-2" icon elevation="10" @click="editAdvance(item)">
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+
+                  <v-btn color="red darken-2" icon elevation="10" @click="openDeleteDialog(item)">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </td>
+              </tr>
+              </tbody>
+            </template>
           </v-data-table>
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- Diálogo de confirmación para eliminar avance -->
+    <confirm-dialog v-if="showDeleteDialog"
+                    :message="'¿Estás seguro de que deseas eliminar el avance ' + selectedAdvance.name + '?'"
+                    @confirm="confirmDeleteAdvance" @cancel="closeDeleteDialog" />
+
+    <!-- Mensajes de éxito y error -->
+    <success-message v-if="showSuccessMessage" :message="successMessage" />
+    <error-message v-if="showErrorMessage" :message="errorMessage" />
   </v-container>
 </template>
 
 <script>
-import advanceService from '@/services/advanceService';
+import advanceService from "@/services/advanceService"; // Importa el servicio de avances
+import ConfirmDialog from "@/components/shared/ConfirmDialog.vue"; // Importa el componente de confirmación
 
 export default {
+  components: {
+    ConfirmDialog // Registrar el componente
+  },
   data() {
     return {
-      advances: [],
+      advances: [], // Lista vacía, se llenará con los datos reales
       headers: [
-        { text: 'Nombre', value: 'name' },
-        { text: 'Descripción', value: 'description' },
-        { text: 'Tarea', value: 'task.name' },
-        { text: 'Acciones', value: 'actions', sortable: false }
-      ]
+        { text: "Nombre", value: "name" },
+        { text: "Descripción", value: "description" },
+        { text: "Tarea", value: "task.name" }, // Se muestra el nombre de la tarea si existe
+        { text: "Fecha de creación", value: "creationDate" },
+        { text: "Acciones", value: "actions", sortable: false }
+      ],
+      search: '', // Para realizar la búsqueda
+      showSuccessMessage: false,
+      showErrorMessage: false,
+      successMessage: '',
+      errorMessage: '',
+      showDeleteDialog: false, // Estado para mostrar el diálogo de confirmación
+      selectedAdvance: null // Avance seleccionado para eliminar
     };
   },
   created() {
-    this.fetchAdvances();
+    this.loadAdvances(); // Cargar la lista de avances cuando el componente se monte
   },
   methods: {
-    async fetchAdvances() {
+    // Método para cargar la lista de avances desde la API
+    async loadAdvances() {
       try {
-        this.advances = await advanceService.getAllAdvances();
+        this.advances = await advanceService.getAllAdvances(); // Llamada al servicio para obtener avances
       } catch (error) {
-        console.error('Error al obtener los avances:', error);
+        this.showError('Error al cargar la lista de avances');
       }
     },
-    goToCreateAdvance() {
-      this.$router.push('/advances/create');
-    },
+
+    // Método para redirigir a la edición de avance
     editAdvance(advance) {
       this.$router.push(`/advances/edit/${advance.id}`);
     },
-    async deleteAdvance(advance) {
+
+    // Abrir diálogo de confirmación antes de eliminar
+    openDeleteDialog(advance) {
+      this.selectedAdvance = advance; // Guardar el avance seleccionado
+      this.showDeleteDialog = true; // Mostrar el diálogo
+    },
+
+    // Método para cerrar el diálogo de confirmación
+    closeDeleteDialog() {
+      this.selectedAdvance = null;
+      this.showDeleteDialog = false; // Cerrar el diálogo
+    },
+
+    // Método para confirmar la eliminación de un avance
+    async confirmDeleteAdvance() {
       try {
-        await advanceService.deleteAdvance(advance.id);
-        this.fetchAdvances(); // Actualiza la lista
+        await advanceService.deleteAdvance(this.selectedAdvance.id); // Llamada al servicio para eliminar avance
+        this.advances = this.advances.filter(advance => advance.id !== this.selectedAdvance.id); // Filtrar la lista local
+        this.showSuccess('Avance eliminado con éxito');
       } catch (error) {
-        console.error('Error al eliminar el avance:', error);
+        this.showError('Error al eliminar el avance');
+      } finally {
+        this.closeDeleteDialog(); // Cerrar el diálogo después de la operación
       }
+    },
+
+    // Mostrar mensaje de éxito
+    showSuccess(message) {
+      this.successMessage = message;
+      this.showSuccessMessage = true;
+      this.showErrorMessage = false;
+    },
+
+    // Mostrar mensaje de error
+    showError(message) {
+      this.errorMessage = message;
+      this.showErrorMessage = true;
+      this.showSuccessMessage = false;
+    },
+
+    // Método para redirigir a la creación de avance
+    goToCreateAdvance() {
+      this.$router.push('/advances/create');
     }
   }
 };
 </script>
+
+<style scoped>
+/* Estilos personalizados si es necesario */
+</style>
