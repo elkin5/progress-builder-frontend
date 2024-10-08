@@ -12,8 +12,28 @@
             <v-textarea v-model="description" label="Descripción del avance" :rules="[rules.required]" required></v-textarea>
 
             <!-- Selección de la tarea asociada -->
-            <v-autocomplete v-model="selectedTask" :items="tasks" :rules="[rules.required]" label="Tarea"
-                            item-text="name" item-value="id" return-object></v-autocomplete>
+            <v-autocomplete
+              v-if="!taskId"
+              v-model="selectedTask"
+              :items="tasks"
+              item-text="name"
+              item-value="id"
+              label="Seleccionar Tarea"
+              :rules="[rules.required]"
+              required
+            ></v-autocomplete>
+
+<!--            <v-autocomplete-->
+<!--              v-model="selectedTask"-->
+<!--              :items="tasks"-->
+<!--              :rules="[rules.required]"-->
+<!--              label="Tarea"-->
+<!--              item-text="name"-->
+<!--              item-value="id"-->
+<!--              return-object-->
+<!--              :disabled="tasks.length === 0"-->
+<!--              placeholder="Selecciona una tarea o espera a que se carguen">-->
+<!--            </v-autocomplete>-->
 
             <v-btn :disabled="!valid" color="success" @click="submit" block>Crear Avance</v-btn>
           </v-form>
@@ -33,6 +53,7 @@ export default {
       valid: false,
       name: '',
       description: '',
+      taskId: null,
       selectedTask: null,
       tasks: [],
       rules: {
@@ -41,7 +62,11 @@ export default {
     };
   },
   created() {
-    this.fetchTasks();
+    this.taskId = this.$route.query.taskId || null; // Obtiene projectId de los parámetros de consulta
+
+    if (!this.taskId) {
+      this.fetchTasks(); // Si no hay projectId, carga la lista de proyectos
+    }
   },
   methods: {
     async fetchTasks() {
@@ -57,10 +82,10 @@ export default {
           const newAdvance = {
             name: this.name,
             description: this.description,
-            task_id: this.selectedTask.id
+            task_id: this.taskId || this.selectedTask.id
           };
           await advanceService.createAdvance(newAdvance);
-          this.$router.push('/advances');
+          await this.$router.push('/advances');
         } catch (error) {
           console.error('Error al crear el avance:', error);
         }

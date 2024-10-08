@@ -21,7 +21,8 @@ export default {
 
     async createAdvance(advance) {
         try {
-            const response = await axiosInstance().post('/advances', advance);
+            console.log(advance)
+            const response = await axiosInstance().post('/advances/register', advance);
             return response.data;
         } catch (error) {
             throw new Error('Error al crear el avance.');

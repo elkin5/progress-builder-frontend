@@ -2,17 +2,36 @@
   <v-container>
     <v-row justify="center">
       <v-col cols="12" md="12">
-        <v-card>
+        <v-card class="pa-4">
+          <!-- Título de la pantalla -->
           <v-card-title>
-            <h2>Tareas</h2>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" @click="goToCreateTask">Crear Tarea</v-btn>
+            <h2>Listado de Tareas</h2>
           </v-card-title>
 
-          <v-data-table :headers="headers" :items="tasks" class="elevation-1">
+          <!-- Botón Crear Cliente alineado a la derecha -->
+          <v-row justify="end">
+            <v-col cols="auto">
+              <v-btn color="primary" @click="goToCreateTask">Crear Tarea</v-btn>
+            </v-col>
+          </v-row>
+
+          <!-- Campo de búsqueda -->
+          <v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" single-line hide-details></v-text-field>
+
+          <!-- Tabla de clientes -->
+          <v-data-table :items="tasks" :headers="headers" :search="search" class="elevation-1">
             <template v-slot:item.actions="{ item }">
+              <!-- Botón para editar tarea -->
               <v-icon small @click="editTask(item)">mdi-pencil</v-icon>
+
+              <!-- Botón para eliminar tarea -->
               <v-icon small @click="deleteTask(item)">mdi-delete</v-icon>
+
+              <!-- Botón para agregar avance -->
+              <v-icon small @click="addAdvance(item)" color="green">mdi-plus</v-icon>
+
+              <!-- Botón para dar por terminada la tarea -->
+              <v-icon small @click="completeTask(item)" color="blue">mdi-check</v-icon>
             </template>
             <template v-slot:body="{ items }">
               <tbody>
@@ -27,6 +46,14 @@
 
                   <v-btn color="red darken-2" icon elevation="10" @click="openDeleteDialog(item)">
                     <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+
+                  <v-btn color="green darken-2" icon elevation="10" @click="addAdvance(item)">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+
+                  <v-btn color="blue darken-2" icon elevation="10" @click="completeTask(item)">
+                    <v-icon>mdi-check</v-icon>
                   </v-btn>
                 </td>
               </tr>
@@ -59,13 +86,13 @@ export default {
   data() {
     return {
       tasks: [], // Lista vacía, se llenará con los datos reales
+      search: '', // Campo de búsqueda
       headers: [
         { text: "Nombre", value: "name" },
         { text: "Descripción", value: "description" },
-        { text: "Proyecto", value: "project.name" },
+        { text: "Proyecto", value: "project.name" }, // Se muestra el nombre del proyecto si existe
         { text: "Acciones", value: "actions", sortable: false }
       ],
-      search: '', // Para realizar la búsqueda
       showSuccessMessage: false,
       showErrorMessage: false,
       successMessage: '',
@@ -90,6 +117,23 @@ export default {
     // Método para redirigir a la edición de tarea
     editTask(task) {
       this.$router.push(`/tasks/edit/${task.id}`);
+    },
+
+    // Método para agregar avance a una tarea
+    addAdvance(task) {
+      this.$router.push({ path: '/advances/create', query: { taskId: task.id } });
+    },
+
+    // Método para dar por terminada la tarea
+    async completeTask(task) {
+      try {
+        // Actualiza la tarea como completada
+        await taskService.updateTask(task.id, { ...task, status: 'completed' });
+        this.showSuccess('Tarea marcada como completada');
+        await this.loadTasks(); // Recargar la lista de tareas
+      } catch (error) {
+        this.showError('Error al completar la tarea');
+      }
     },
 
     // Abrir diálogo de confirmación antes de eliminar
@@ -131,7 +175,7 @@ export default {
       this.showSuccessMessage = false;
     },
 
-    // Método para redirigir a la creación de proyecto
+    // Método para redirigir a la creación de tarea
     goToCreateTask() {
       this.$router.push('/tasks/create');
     }
@@ -140,5 +184,5 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos personalizados si es necesario */
+/* Estilos personalizados si son necesarios */
 </style>
