@@ -75,7 +75,7 @@ export default {
           const newTask = {
             name: this.name,
             description: this.description,
-            project_id: this.projectId || this.selectedProject.id
+            project_id: this.projectId || this.selectedProject
           };
           await taskService.createTask(newTask);
           await this.$router.push('/tasks');

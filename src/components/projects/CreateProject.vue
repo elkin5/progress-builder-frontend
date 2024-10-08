@@ -79,7 +79,7 @@ export default {
             description: this.description,
             start_date: this.startDate,
             end_date: this.endDate,
-            client_id: this.clientId || this.selectedClient?.id // Usar el clientId de la URL o el cliente seleccionado
+            client_id: this.clientId || this.selectedClient // Usar el clientId de la URL o el cliente seleccionado
           };
           await projectService.createProject(newProject);
           this.$router.push('/projects');
