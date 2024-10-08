@@ -29,7 +29,7 @@
                 <td>{{ item.email }}</td>
                 <td>{{ item.phone }}</td>
                 <td>{{ item.identification }}</td>
-                <td>{{ item.type.text }}</td> <!-- Tipo -->
+                <td>{{ item.type }}</td> <!-- Tipo -->
                 <td>
                   <!-- Botón para editar cliente -->
                   <v-btn color="yellow darken-2" icon elevation="10" @click="editClient(item)">
