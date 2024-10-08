@@ -22,13 +22,13 @@ import ProjectList from '@/components/projects/ProjectList.vue';
 // Importaciones para Tareas
 import TasksView from '@/views/TasksView.vue';
 import CreateTask from '@/components/tasks/CreateTask.vue';
-// import UpdateTask from '@/components/tasks/UpdateTask.vue';
+import UpdateTask from '@/components/tasks/UpdateTask.vue';
 import TaskList from '@/components/tasks/TaskList.vue';
 
 // Importaciones para Avances
 import AdvancesView from '@/views/AdvancesView.vue';
 import CreateAdvance from '@/components/advances/CreateAdvance.vue';
-// import UpdateAdvance from '@/components/advances/UpdateAdvance.vue';
+import UpdateAdvance from '@/components/advances/UpdateAdvance.vue';
 import AdvanceList from '@/components/advances/AdvanceList.vue';
 
 // Página de login
@@ -117,7 +117,7 @@ const routes = [
       },
       {
         path: 'edit/:id',
-        // component: UpdateTask,
+        component: UpdateTask,
       },
     ],
   },
@@ -136,7 +136,7 @@ const routes = [
       },
       {
         path: 'edit/:id',
-        // component: UpdateAdvance,
+        component: UpdateAdvance,
       },
     ],
   },
