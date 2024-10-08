@@ -3,7 +3,7 @@
     <!-- Mostrar la barra superior solo si el usuario está autenticado -->
     <v-app-bar v-if="isAuthenticated" app color="primary" dark>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>PWA Application</v-toolbar-title>
+      <v-toolbar-title>Sistema Gestor de Avances de Obra</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
