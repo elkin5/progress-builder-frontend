@@ -15,8 +15,25 @@ export default {
     return localStorage.getItem('token'); // Devuelve el token almacenado
   },
 
-  logout(router) {
-    localStorage.removeItem('token');
-    router.push('/login');
-  }
+  async logout(router) {
+    try {
+      // Remover el token del localStorage
+      localStorage.removeItem('token');
+
+      // Limpiar cualquier caché del navegador (opcional)
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        for (let name of cacheNames) {
+          await caches.delete(name); // Eliminar todas las cachés
+        }
+      }
+
+      // Limpiar el estado de Vuex (si usas Vuex) o cualquier otra información almacenada
+
+      // Redirigir al login
+      router.push('/login');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  },
 };

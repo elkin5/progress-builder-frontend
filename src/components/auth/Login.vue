@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import authService from '@/services/authService'; // Servicio para manejar las peticiones de autenticación
+import authService from '@/services/authService';
 
 export default {
   data() {
@@ -91,13 +91,21 @@ export default {
           });
 
           const token = response.data.token; // Asegúrate de que la respuesta contenga el token
-          // Guarda el token en localStorage
-          localStorage.setItem('token', token);
 
-          this.showSuccessMessage = true;
+          if (token) {
+            // Guardar el token en localStorage
+            localStorage.setItem('token', token);
 
-          // Redirigir a la página principal o dashboard
-          this.$router.push('/'); // Cambia la ruta según tu aplicación
+            this.showSuccessMessage = true;
+
+            // Redirigir al usuario
+            await this.$router.push('/');
+
+            // Refrescar la aplicación o recargar la página para asegurarse de que el token se use correctamente
+            window.location.reload(); // Esto forzará a la app a cargar con el nuevo token
+          } else {
+            this.showErrorMessage = true;
+          }
         } catch (error) {
           this.showErrorMessage = true;
           console.error('Error al iniciar sesión:', error);

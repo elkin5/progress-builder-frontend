@@ -28,21 +28,16 @@
               </p>
               <v-divider class="my-3"></v-divider>
               <v-btn depressed rounded text @click="editAccount">
-                Edit Account
+                Editar cuenta
               </v-btn>
               <v-divider class="my-3"></v-divider>
               <v-btn depressed rounded text @click="logout">
-                Disconnect
+                Cerrar sesión
               </v-btn>
             </div>
           </v-list-item-content>
         </v-card>
       </v-menu>
-
-      <!-- Botón de Logout -->
-      <!-- <v-btn icon @click="logout">
-        <v-icon>mdi-logout</v-icon>
-      </v-btn> -->
     </v-app-bar>
 
     <!-- Mostrar la barra de navegación lateral solo si el usuario está autenticado -->
@@ -71,6 +66,7 @@
 
 <script>
 import authService from '@/services/authService'; // Importa el servicio de autenticación
+import { decodeJwt } from '@/services/jwtService'; // Importa el servicio de jwt
 import router from '@/router/index.js'
 
 export default {
@@ -81,15 +77,37 @@ export default {
       userEmail: '', // Almacena el correo del usuario
       userFullName: '',
       userId: '',
-      items: [
-        { title: 'Users', icon: 'mdi-account', route: '/users' },
-        { title: 'Clients', icon: 'mdi-account-group', route: '/clients' },
-        { title: 'Projects', icon: 'mdi-briefcase', route: '/projects' },
-        { title: 'Tasks', icon: 'mdi-file-document', route: '/tasks' },
-        { title: 'Advances', icon: 'mdi-progress-clock', route: '/advances' },
+      userRole: '', // Almacena el rol del usuario
+      defaultItems: [
+        { title: 'Clientes', icon: 'mdi-account-group', route: '/clients' },
+        { title: 'Proyectos', icon: 'mdi-briefcase', route: '/projects' },
+        { title: 'Tareas', icon: 'mdi-file-document', route: '/tasks' },
+        { title: 'Avances', icon: 'mdi-progress-clock', route: '/advances' },
         { title: 'Reports', icon: 'mdi-file-chart', route: '/reports' },
       ],
     };
+  },
+  computed: {
+    items() {
+      // Si el usuario es administrador, agrega el menú de gestión de usuarios
+      if (this.userRole === 'admin') {
+        return [
+          { title: 'Usuarios', icon: 'mdi-account', route: '/users' },
+          ...this.defaultItems,
+        ];
+      }
+      return this.defaultItems;
+    },
+
+    userInitials() {
+      // Devuelve las iniciales del nombre completo si existe
+      return this.userFullName
+        ? this.userFullName
+          .split(' ')
+          .map(name => name.charAt(0).toUpperCase())
+          .join('')
+        : 'AZ'; // Iniciales por defecto
+    },
   },
   created() {
     // Verifica si el usuario está autenticado cuando el componente es creado
@@ -102,50 +120,19 @@ export default {
       this.isAuthenticated = !!authService.getToken();
     },
   },
-  computed: {
-    userInitials() {
-      // Devuelve las iniciales del nombre completo si existe
-      return this.userFullName
-        ? this.userFullName
-            .split(' ')
-            .map(name => name.charAt(0).toUpperCase())
-            .join('')
-        : 'AZ'; // Iniciales por defecto
-    },
-  },
-
   methods: {
     getUserInfo() {
       const token = authService.getToken();
       if (token) {
         // Decodifica el payload del JWT
-        const decoded = this.parseJwt(token);
-        console.log("decoded:", decoded);
+        const decoded = decodeJwt(token);
+
         if (decoded) {
           this.userEmail = decoded.userEmail || '@'; // Asigna el correo del usuario desde el token
-          this.userFullName = decoded.name || '-'; // Nombre completo del usuario
+          this.userFullName = decoded.userName || '-'; // Nombre completo del usuario
           this.userId = decoded.userId || '0';
+          this.userRole = decoded.userType || '-'; // Tipo de usuario
         }
-      }
-    },
-
-    parseJwt(token) {
-      try {
-        // Decodifica el token JWT (segunda parte del payload, base64)
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(
-          atob(base64)
-            .split('')
-            .map(function (c) {
-              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            })
-            .join('')
-        );
-        return JSON.parse(jsonPayload); // Devuelve el objeto JSON decodificado
-      } catch (error) {
-        console.error('Error decoding JWT:', error);
-        return null;
       }
     },
 
