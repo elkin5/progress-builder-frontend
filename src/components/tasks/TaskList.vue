@@ -30,7 +30,7 @@
                 <td>{{ item.id }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
-                <td>{{ item.project ? item.project.name : 'Sin proyecto' }}</td>
+                <td>{{ item.Project ? item.Project.name : 'Sin proyecto' }}</td>
                 <td>{{ formatDate(item.createdAt) }}</td>
                 <td>{{ formatDate(item.updatedAt) }}</td>
                 <td>
