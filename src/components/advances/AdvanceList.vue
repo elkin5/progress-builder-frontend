@@ -2,33 +2,66 @@
   <v-container>
     <v-row justify="center">
       <v-col cols="12" md="12">
-        <v-card>
+        <v-card class="pa-4">
+          <!-- Título de la pantalla -->
           <v-card-title>
-            <h2>Avances</h2>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" @click="goToCreateAdvance">Crear Avance</v-btn>
+            <h2>Listado de Avances</h2>
           </v-card-title>
 
-          <v-data-table :headers="headers" :items="advances" class="elevation-1">
+          <!-- Botón Crear Cliente alineado a la derecha -->
+          <v-row justify="end">
+            <v-col cols="auto">
+              <v-btn color="primary" @click="goToCreateAdvance">Crear Avance</v-btn>
+            </v-col>
+          </v-row>
+
+          <!-- Campo de búsqueda -->
+          <v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" single-line hide-details></v-text-field>
+
+          <v-data-table :headers="headers" :items="advances" :search="search" class="elevation-1">
             <template v-slot:item.actions="{ item }">
               <v-icon small @click="editAdvance(item)">mdi-pencil</v-icon>
-              <v-icon small @click="deleteAdvance(item)">mdi-delete</v-icon>
+              <v-icon small @click="showDeleteDialog(item)">mdi-delete</v-icon>
             </template>
             <template v-slot:body="{ items }">
               <tbody>
               <tr v-for="item in items" :key="item.id">
+                <td>{{ item.id }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
-                <td>{{ item.task ? item.task.name : 'Sin tarea asignada' }}</td> <!-- Validar tarea -->
-                <td>{{ item.creationDate }}</td>
+                <td>{{ item.Task ? item.Task.name : 'Sin tarea asignada' }}</td> <!-- Validar tarea -->
+                <td>{{ item.createdAt }}</td>
                 <td>
-                  <v-btn color="yellow darken-2" icon elevation="10" @click="editAdvance(item)">
-                    <v-icon>mdi-pencil</v-icon>
-                  </v-btn>
+                  <!-- Botón para editar avance -->
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        color="yellow darken-2"
+                        icon
+                        elevation="10"
+                        @click="editAdvance(item)"
+                        v-bind="attrs"
+                        v-on="on">
+                        <v-icon>mdi-pencil</v-icon> <!-- Ícono para agregar avance -->
+                      </v-btn>
+                    </template>
+                    <span>Editar avance</span>
+                  </v-tooltip>
 
-                  <v-btn color="red darken-2" icon elevation="10" @click="openDeleteDialog(item)">
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        color="red darken-2"
+                        icon
+                        elevation="10"
+                        @click="openDeleteDialog(item)"
+                        v-bind="attrs"
+                        v-on="on">
+                        <v-icon>mdi-delete</v-icon> <!-- Ícono para agregar avance -->
+                      </v-btn>
+                    </template>
+                    <span>Eliminar avance</span>
+                  </v-tooltip>
                 </td>
               </tr>
               </tbody>
@@ -61,10 +94,11 @@ export default {
     return {
       advances: [], // Lista vacía, se llenará con los datos reales
       headers: [
+        { text: 'ID', value: 'id' },
         { text: "Nombre", value: "name" },
         { text: "Descripción", value: "description" },
         { text: "Tarea", value: "task.name" }, // Se muestra el nombre de la tarea si existe
-        { text: "Fecha de creación", value: "creationDate" },
+        { text: "Fecha de creación", value: "createdAt" },
         { text: "Acciones", value: "actions", sortable: false }
       ],
       search: '', // Para realizar la búsqueda

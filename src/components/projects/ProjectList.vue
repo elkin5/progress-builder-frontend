@@ -4,7 +4,7 @@
       <v-col cols="12" md="12">
         <v-card class="pa-4">
           <v-card-title>
-            <h2>Proyectos</h2>
+            <h2>Listado de Proyectos</h2>
           </v-card-title>
 
           <!-- Botón Crear Cliente alineado a la derecha -->
