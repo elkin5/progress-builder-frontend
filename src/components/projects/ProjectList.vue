@@ -22,25 +22,22 @@
             <template v-slot:body="{ items }">
               <tbody>
               <tr v-for="item in items" :key="item.id">
+                <td>{{ item.id }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
-                <td>{{ item.client ? item.client.name : 'Sin cliente' }}</td>
+                <td>{{ formatDate(item.start_date) }}</td> <!-- Formatear fecha de inicio -->
+                <td>{{ formatDate(item.end_date) }}</td> <!-- Formatear fecha de fin -->
+                <td>{{ item.Client ? item.Client.name : 'Sin cliente'}}</td>
                 <td>
-                  <!-- Botón para editar el proyecto -->
                   <v-btn color="yellow darken-2" icon elevation="10" @click="editProject(item)">
                     <v-icon>mdi-pencil</v-icon>
                   </v-btn>
-
-                  <!-- Botón para eliminar el proyecto -->
                   <v-btn color="red darken-2" icon elevation="10" @click="openDeleteDialog(item)">
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
-
-                  <!-- Botón para agregar tarea -->
                   <v-btn color="green darken-2" icon elevation="10" @click="addTask(item)">
                     <v-icon>mdi-plus-box</v-icon> <!-- Ícono de agregar tarea -->
                   </v-btn>
-
                 </td>
               </tr>
               </tbody>
@@ -74,10 +71,13 @@ export default {
       projects: [], // Lista vacía, se llenará con los datos reales
       search: '', // Campo de búsqueda
       headers: [
-        {text: "Nombre", value: "name"},
-        {text: "Descripción", value: "description"},
-        {text: "Cliente", value: "client.name"}, // Se muestra el nombre del cliente si existe
-        {text: "Acciones", value: "actions", sortable: false}
+        { text: "ID", value: "id" }, // Nueva columna para el ID
+        { text: "Nombre", value: "name" },
+        { text: "Descripción", value: "description" },
+        { text: "Fecha de Inicio", value: "start_date" }, // Nueva columna para la fecha de inicio
+        { text: "Fecha de Fin", value: "end_date" }, // Nueva columna para la fecha de fin
+        { text: "Cliente", value: "client.name" },
+        { text: "Acciones", value: "actions", sortable: false }
       ],
       showSuccessMessage: false,
       showErrorMessage: false,
@@ -98,6 +98,16 @@ export default {
       } catch (error) {
         this.showError('Error al cargar la lista de proyectos');
       }
+    },
+
+    // Formatear fecha en dd-mm-yyyy
+    formatDate(date) {
+      if (!date) return ''; // Si la fecha es nula o indefinida, devuelve una cadena vacía
+      const d = new Date(date);
+      const day = (`0${d.getDate()}`).slice(-2); // Asegurar que el día tenga dos dígitos
+      const month = (`0${d.getMonth() + 1}`).slice(-2); // Asegurar que el mes tenga dos dígitos
+      const year = d.getFullYear();
+      return `${day}-${month}-${year}`;
     },
 
     // Método para redirigir a la edición de proyecto
