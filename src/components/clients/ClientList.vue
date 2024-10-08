@@ -32,19 +32,52 @@
                 <td>{{ item.type }}</td> <!-- Tipo -->
                 <td>
                   <!-- Botón para editar cliente -->
-                  <v-btn color="yellow darken-2" icon elevation="10" @click="editClient(item)">
-                    <v-icon>mdi-pencil</v-icon>
-                  </v-btn>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        color="yellow darken-2"
+                        icon
+                        elevation="10"
+                        @click="editClient(item)"
+                        v-bind="attrs"
+                        v-on="on">
+                        <v-icon>mdi-pencil</v-icon> <!-- Ícono para agregar avance -->
+                      </v-btn>
+                    </template>
+                    <span>Editar cliente</span>
+                  </v-tooltip>
 
                   <!-- Botón para eliminar cliente -->
-                  <v-btn color="red darken-2" icon elevation="10" @click="openDeleteDialog(item)">
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        color="red darken-2"
+                        icon
+                        elevation="10"
+                        @click="openDeleteDialog(item)"
+                        v-bind="attrs"
+                        v-on="on">
+                        <v-icon>mdi-delete</v-icon> <!-- Ícono para agregar avance -->
+                      </v-btn>
+                    </template>
+                    <span>Eliminar cliente</span>
+                  </v-tooltip>
 
                   <!-- Botón para crear un proyecto asociado a este cliente -->
-                  <v-btn color="blue darken-2" icon elevation="10" @click="createProjectForClient(item)">
-                    <v-icon>mdi-briefcase-plus</v-icon> <!-- Ícono de crear proyecto -->
-                  </v-btn>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        color="blue darken-2"
+                        icon
+                        elevation="10"
+                        @click="createProjectForClient(item)"
+                        v-bind="attrs"
+                        v-on="on">
+                        <v-icon>mdi-briefcase-plus</v-icon> <!-- Ícono para agregar avance -->
+                      </v-btn>
+                    </template>
+                    <span>Agregar proyecto</span>
+                  </v-tooltip>
                 </td>
               </tr>
               </tbody>

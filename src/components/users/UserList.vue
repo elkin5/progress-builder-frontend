@@ -32,13 +32,37 @@
                   <td>{{ item.identification }}</td> <!-- Identificación -->
                   <td>{{ item.position }}</td> <!-- Posición -->
                   <td>
-                    <v-btn color="yellow darken-2" icon elevation="10" @click="editUser(item)">
-                      <v-icon>mdi-pencil</v-icon> <!-- Ícono de edición -->
-                    </v-btn>
+                    <!-- Botón para editar -->
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          color="yellow darken-2"
+                          icon
+                          elevation="10"
+                          @click="editUser(item)"
+                          v-bind="attrs"
+                          v-on="on">
+                          <v-icon>mdi-pencil</v-icon> <!-- Ícono para agregar avance -->
+                        </v-btn>
+                      </template>
+                      <span>Editar usuario</span>
+                    </v-tooltip>
 
-                    <v-btn color="red darken-2" icon elevation="10" @click="openDeleteDialog(item)">
-                      <v-icon>mdi-delete</v-icon> <!-- Ícono de eliminar -->
-                    </v-btn>
+                    <!-- Botón para eliminar -->
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          color="red darken-2"
+                          icon
+                          elevation="10"
+                          @click="openDeleteDialog(item)"
+                          v-bind="attrs"
+                          v-on="on">
+                          <v-icon>mdi-delete</v-icon> <!-- Ícono para agregar avance -->
+                        </v-btn>
+                      </template>
+                      <span>Eliminar usuario</span>
+                    </v-tooltip>
                   </td>
                 </tr>
               </tbody>
