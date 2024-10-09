@@ -19,10 +19,10 @@ export default {
         }
     },
 
-    async getCountTaskCompleteByClient(clientId) {
+    async getCountTaskCompleteByProject(projectId) {
         try {
             const response =
-                await axiosInstance().get(`/project/query/count-tasks-by-client/${clientId}`);
+                await axiosInstance().get(`/project/query/count-tasks-by-project/${projectId}`);
             return response.data;
         } catch (error) {
             throw new Error('Error al obtener la información.');
