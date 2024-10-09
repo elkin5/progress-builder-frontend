@@ -33,6 +33,7 @@ import AdvanceList from '@/components/advances/AdvanceList.vue';
 
 // Página de login
 import Login from '@/components/auth/Login.vue';
+import ReportList from "@/components/reports/ReportList.vue";
 
 Vue.use(VueRouter);
 
@@ -137,6 +138,17 @@ const routes = [
       {
         path: 'edit/:id',
         component: UpdateAdvance,
+      },
+    ],
+  },
+  // Rutas para reportes
+  {
+    path: '/reports',
+    component: AdvancesView,
+    children: [
+      {
+        path: '',
+        component: ReportList,
       },
     ],
   },

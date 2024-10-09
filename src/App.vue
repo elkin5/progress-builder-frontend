@@ -83,7 +83,7 @@ export default {
         { title: 'Proyectos', icon: 'mdi-briefcase', route: '/projects' },
         { title: 'Tareas', icon: 'mdi-file-document', route: '/tasks' },
         { title: 'Avances', icon: 'mdi-progress-clock', route: '/advances' },
-        { title: 'Reports', icon: 'mdi-file-chart', route: '/reports' },
+        { title: 'Reportes ', icon: 'mdi-file-chart', route: '/reports' },
       ],
     };
   },
