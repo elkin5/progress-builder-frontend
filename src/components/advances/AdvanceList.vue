@@ -171,7 +171,6 @@ export default {
         { text: "Descripción", value: "description" },
         { text: "Tarea", value: "Task.name" }, // Se muestra el nombre de la tarea si existe
         { text: "Fecha de creación", value: "createdAt" },
-        { text: "Fecha de modificación", value: "updatedAt" },
         { text: "Acciones", value: "actions", sortable: false }
       ],
       search: '', // Para realizar la búsqueda
