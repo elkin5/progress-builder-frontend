@@ -96,10 +96,10 @@
     </v-row>
 
     <!-- Modal para ver archivos multimedia -->
-    <v-dialog v-model="showMultimediaModal" persistent max-width="600px">
+    <v-dialog v-model="showMultimediaModal" persistent max-width="1000px" max-height="800px">
       <v-card>
         <v-card-title class="text-h5">
-          Evidencias del Avance {{ selectedAdvance ? selectedAdvance.name : '' }}
+          Evidencias del Avance: {{ selectedAdvance ? selectedAdvance.name : '' }}
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -112,8 +112,29 @@
                 <!-- Card para cada archivo multimedia -->
                 <v-card class="mb-4">
                   <!-- Imagen en el card -->
-                  <v-img :src="getFileByUrl(file.file_path)" :alt="file.file_path" aspect-ratio="1.75"></v-img>
+<!--                  <v-img :src="getFileByUrl(file.file_path)" :alt="file.file_path" aspect-ratio="1.75"></v-img>-->
                   <!-- Subtítulo con el número de imagen -->
+                  <!-- Imagen en tamaño normal -->
+                  <v-img
+                    :src="getFileByUrl(file.file_path)"
+                    :alt="file.file_path"
+                    aspect-ratio="1.75"
+                    @click="openImageModal(file.file_path)"
+                    style="cursor: pointer;"
+                  ></v-img>
+
+                  <!-- Modal de imagen a pantalla completa -->
+                  <v-dialog v-model="showImageModal" persistent max-width="100%">
+                    <v-card>
+                      <v-card-text class="text-center">
+                        <!-- Imagen en pantalla completa dentro del modal -->
+                        <v-img :src="selectedImage" max-width="100%" max-height="100vh" contain></v-img>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-btn color="blue darken-1" text @click="showImageModal = false">Cerrar</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                   <v-card-subtitle>
                     Evidencia #{{ file.id }}
                   </v-card-subtitle>
@@ -161,6 +182,8 @@ export default {
   },
   data() {
     return {
+      showImageModal: false,  // Controla la visibilidad del modal
+      selectedImage: null,  // Almacena la imagen seleccionada
       advances: [], // Lista vacía, se llenará con los datos reales
       multimediaFiles: [], // Lista de archivos multimedia
       showMultimediaModal: false, // Controla la visibilidad del modal
@@ -266,6 +289,11 @@ export default {
       const baseUrl = process.env.VUE_APP_API_URL;
       // Devuelve la URL completa basada en el file_path devuelto por el servidor
       return `${baseUrl}/files/public/${filePath}`;
+    },
+
+    openImageModal(filePath) {
+      this.selectedImage = this.getFileByUrl(filePath);  // Establece la imagen seleccionada
+      this.showImageModal = true;  // Muestra el modal
     }
   }
 };
