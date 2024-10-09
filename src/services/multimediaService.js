@@ -16,4 +16,14 @@ export default {
             throw new Error(error);
         }
     },
+
+    async getFilesByAdvance(advanceId) {
+        try {
+            const response = await axiosInstance().get(`/files/by-advance/${advanceId}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error al obtener archivos multimedia:', error);
+            throw error;
+        }
+    },
 };
