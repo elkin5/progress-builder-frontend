@@ -34,13 +34,18 @@ import AdvanceList from '@/components/advances/AdvanceList.vue';
 // Página de login
 import Login from '@/components/auth/Login.vue';
 import ReportList from "@/components/reports/ReportList.vue";
+import HomePage from "@/components/HomePage.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    redirect: '/users', // Redirige a /users si está autenticado, o a login si no
+    redirect: '/home', // Redirige a /users si está autenticado, o a login si no
+  },
+  {
+    path: '/home',
+    component: HomePage,
   },
   {
     path: '/login',
